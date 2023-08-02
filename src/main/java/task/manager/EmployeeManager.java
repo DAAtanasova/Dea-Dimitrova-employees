@@ -21,22 +21,10 @@ public class EmployeeManager {
     public String findResult(InputStream inputStream) throws Exception {
 
         Map<Long, List<Employee>> projectEmployeeMap = getDataFromFile(inputStream);
-        for (Map.Entry<Long, List<Employee>> project : projectEmployeeMap.entrySet()) {
-            System.out.println(" Project: " + project.getKey());
-            for (Employee empl : project.getValue()) {
-                System.out.println("Empl: " + empl.getEmployeeId() + " -> " + empl.getDateFrom() + " - " + empl.getDateTo());
-            }
-        }
-//        System.out.println("Project Empl map: " + projectEmployeeMap);
-//        Map<Long, Project> projectColleaguesMap = separateEmployeesInProjects(projectEmployeeMap);
         List<Project> projects = separateEmployeesInProjects(projectEmployeeMap);
-        System.out.println(" projects: " + projects);
 
         Colleague longestWorkingColleagues = findLongestWorkingPeriod(projects);
-        System.out.println("longest: " + longestWorkingColleagues);
         return longestWorkingColleagues.getFirstEmployeeId() + "," + longestWorkingColleagues.getSecondEmployeeId() + "," + longestWorkingColleagues.getWorkingDays();
-
-
     }
 
     private Colleague findLongestWorkingPeriod(List<Project> projects) {
@@ -58,34 +46,21 @@ public class EmployeeManager {
 
             longestWorkingColleagues = longestWorkingColleagues.getWorkingDays() > longestWorkingColleaguesForProject.getWorkingDays() ?
                     longestWorkingColleagues : longestWorkingColleaguesForProject;
-
-
         }
 
         return longestWorkingColleagues;
     }
 
-    //    private Map<Long, Project> separateEmployeesInProjects(Map<Long, List<Employee>> projectEmployeeMap){
     private List<Project> separateEmployeesInProjects(Map<Long, List<Employee>> projectEmployeeMap) {
-//        Map<Long, Project> projectColleaguesMap = new HashMap<>();
         List<Project> projectColleaguesMap = new ArrayList<>();
 
         for (Map.Entry<Long, List<Employee>> project : projectEmployeeMap.entrySet()) {
             List<String> proceededCombinations = new ArrayList<>();
 
             List<Colleague> colleagues = new ArrayList<>();
-
-            System.out.println("== Project: " + project.getKey());
-
             for (Employee firstEmpl : project.getValue()) {
-                System.out.println("== first empl: " + firstEmpl.getEmployeeId());
-                System.out.println("== from date: " + firstEmpl.getDateFrom());
-                System.out.println("== to Date: " + firstEmpl.getDateTo());
                 for (Employee secondEmpl : project.getValue()) {
 
-                    System.out.println("== second empl: " + secondEmpl.getEmployeeId());
-                    System.out.println("== from date: " + secondEmpl.getDateFrom());
-                    System.out.println("== to Date: " + secondEmpl.getDateTo());
                     //We need to skip the combination of a same employee
                     if (firstEmpl.getEmployeeId() == secondEmpl.getEmployeeId()) {
                         continue;
@@ -98,15 +73,11 @@ public class EmployeeManager {
                     long biggerId = Math.max(firstEmpl.getEmployeeId(), secondEmpl.getEmployeeId());
                     String emplCombination = smallerId + "_" + biggerId;
 
-                    System.out.println("empl combination: " + emplCombination);
-
                     if (proceededCombinations.contains(emplCombination)) {
-                        System.out.println("already exists");
                         continue;
                     }
 
                     proceededCombinations.add(emplCombination);
-
 
                     DateTime commonDateFrom = firstEmpl.getDateFrom().isBefore(secondEmpl.getDateFrom()) ?
                             secondEmpl.getDateFrom() : firstEmpl.getDateFrom();
@@ -117,8 +88,6 @@ public class EmployeeManager {
                     colleagues.add(colleague);
                 }
             }
-
-//            projectColleaguesMap.put(project.getKey(), new Project(project.getKey(),colleagues));
             projectColleaguesMap.add(new Project(project.getKey(), colleagues));
         }
 
@@ -140,15 +109,10 @@ public class EmployeeManager {
                 }
 
                 String[] elements = itemRow.split(",");
-                System.out.println("==== elements: " + String.join(",", elements));
-
                 Long emplId = Long.valueOf(elements[0]);
                 Long projectID = Long.valueOf(elements[1]);
                 DateTime dateFrom = parseDate(elements[2]);
                 DateTime dateTo;
-
-                System.out.println("-- empl id: " + emplId);
-                System.out.println("-- elements length: " + elements.length);
                 if (elements.length >= 4) {
                     dateTo = parseDate(elements[3]);
                 } else {
@@ -163,9 +127,7 @@ public class EmployeeManager {
                         add(employee);
                     }});
                 }
-
             }
-
         } catch (IOException e) {
             throw new RuntimeException("Reading CSV failed.", e);
         } finally {
@@ -182,9 +144,7 @@ public class EmployeeManager {
     }
 
     private DateTime parseDate(String date) throws Exception {
-        System.out.println("--- prse date . date:" + date);
         if (!StringUtils.hasLength(date)) {
-            System.out.println("Got here parse date");
             return DateTime.now();
         }
 
