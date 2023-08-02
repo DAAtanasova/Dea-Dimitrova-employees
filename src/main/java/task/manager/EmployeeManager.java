@@ -18,13 +18,21 @@ import java.util.*;
 @Component
 public class EmployeeManager {
 
-    public String findResult(InputStream inputStream) throws Exception {
+    public String findLongestWorkingColleagues(InputStream inputStream) throws Exception {
 
         Map<Long, List<Employee>> projectEmployeeMap = getDataFromFile(inputStream);
         List<Project> projects = separateEmployeesInProjects(projectEmployeeMap);
 
         Colleague longestWorkingColleagues = findLongestWorkingPeriod(projects);
         return longestWorkingColleagues.getFirstEmployeeId() + "," + longestWorkingColleagues.getSecondEmployeeId() + "," + longestWorkingColleagues.getWorkingDays();
+    }
+
+    public List<Project> findColleaguesWorkingDays(InputStream inputStream) throws Exception {
+
+        Map<Long, List<Employee>> projectEmployeeMap = getDataFromFile(inputStream);
+        List<Project> projects = separateEmployeesInProjects(projectEmployeeMap);
+
+        return projects;
     }
 
     private Colleague findLongestWorkingPeriod(List<Project> projects) {

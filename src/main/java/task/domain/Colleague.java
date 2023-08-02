@@ -14,11 +14,7 @@ public class Colleague {
     public Colleague(Long firstEmployeeId, Long secondEmployeeId, DateTime commonDateFrom, DateTime commonDateTo) {
         this.firstEmployeeId = firstEmployeeId;
         this.secondEmployeeId = secondEmployeeId;
-
-        System.out.println("comon date from: " + commonDateFrom);
-        System.out.println("comon date to: " + commonDateTo);
         this.workingDays = Days.daysBetween(commonDateFrom,commonDateTo).getDays();
-        System.out.println("working days");
     }
 
     public Long getFirstEmployeeId() {
